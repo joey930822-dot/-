@@ -9,28 +9,42 @@
     
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            margin: 0;
-            padding: 0;
             background-color: #ffffff;
             height: 100vh;
             width: 100vw;
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            overflow: hidden; /* 防止出現捲軸 */
+            position: relative;
+        }
+
+        /* 3D 顯示區域：撐滿整個網頁，消除白邊 */
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            --poster-color: transparent;
+            outline: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1; /* 置於底層 */
+        }
+
+        /* 標題區域容器：置於頂層中央 */
+        .header-container {
+            position: absolute;
+            top: 40px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* 讓內容撐開，不要擠在中間產生白邊 */
-            justify-content: space-between; 
-            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
-            overflow: hidden;
-        }
-
-        /* 中央大標題區塊 */
-        .header-section {
-            padding-top: 40px;
-            text-align: center;
+            pointer-events: none; /* 讓滑鼠點擊可以穿透文字操作模型 */
             z-index: 10;
         }
 
@@ -39,8 +53,8 @@
             color: #000000;
             font-weight: 900;
             letter-spacing: 8px;
-            margin: 0;
-            line-height: 1.2;
+            text-align: center;
+            pointer-events: auto; /* 恢復文字可選取 */
         }
 
         .item-title {
@@ -48,36 +62,27 @@
             color: #000000;
             font-weight: bold;
             margin-top: 10px;
+            text-align: center;
+            pointer-events: auto;
         }
 
-        /* 3D 顯示區域：設定為 flex-grow 填滿所有剩餘空間 */
-        model-viewer {
-            flex-grow: 1; 
-            width: 100%;
-            background-color: #ffffff;
-            --poster-color: transparent;
-            outline: none;
-            /* 確保模型本身不帶額外邊界 */
-            margin: 0; 
-        }
-
-        /* 控制列 */
+        /* 控制按鈕容器：置於底部中央 */
         .controls {
-            padding-bottom: 40px;
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             align-items: center;
             gap: 60px;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.8); /* 稍微透明防止遮擋模型底部 */
-            width: 100%;
-            justify-content: center;
         }
 
         .nav-btn {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #000000;
             transition: transform 0.2s ease;
@@ -94,17 +99,18 @@
             letter-spacing: 2px;
         }
 
-        /* 針對小螢幕（手機）調整字體，避免換行產生白邊 */
+        /* 手機版適應：縮小標題字體防止遮擋過多 */
         @media (max-width: 768px) {
-            .site-title { font-size: 2rem; letter-spacing: 4px; }
-            .item-title { font-size: 1.2rem; }
-            .controls { gap: 30px; }
+            .site-title {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="header-section">
+    <div class="header-container">
         <div class="site-title">迷你燈箱設計</div>
         <div class="item-title" id="title-display">設計 1</div>
     </div>
@@ -144,4 +150,18 @@
             const item = gallery[currentIndex];
             viewer.src = item.file;
             titleDisplay.innerText = item.title;
-            indexDisplay.innerText
+            indexDisplay.innerText = `${currentIndex + 1} / ${gallery.length}`;
+        }
+
+        function nextItem() {
+            currentIndex = (currentIndex + 1) % gallery.length;
+            updateGallery();
+        }
+
+        function prevItem() {
+            currentIndex = (currentIndex - 1 + gallery.length) % gallery.length;
+            updateGallery();
+        }
+    </script>
+</body>
+</html>
