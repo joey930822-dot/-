@@ -8,54 +8,69 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            background-color: #ffffff; /* 背景全白 */
+            padding: 0;
+            background-color: #ffffff;
             height: 100vh;
             width: 100vw;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            /* 讓內容撐開，不要擠在中間產生白邊 */
+            justify-content: space-between; 
             font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
             overflow: hidden;
         }
 
-        /* 中央大標題：迷你燈箱設計 (字體放大四倍、黑粗體、無外框) */
-        .site-title {
-            font-size: 4rem; /* 放大四倍 (基準通常為 1rem = 16px) */
-            color: #000000; /* 全黑 */
-            font-weight: 900; /* 極粗體 */
-            letter-spacing: 8px; /* 增加字距提升設計感 */
-            margin-bottom: 10px;
+        /* 中央大標題區塊 */
+        .header-section {
+            padding-top: 40px;
             text-align: center;
+            z-index: 10;
         }
 
-        /* 作品名稱標題 (設計 1/2/3) - 同樣黑粗體且無框 */
+        .site-title {
+            font-size: 4rem;
+            color: #000000;
+            font-weight: 900;
+            letter-spacing: 8px;
+            margin: 0;
+            line-height: 1.2;
+        }
+
         .item-title {
             font-size: 1.5rem;
             color: #000000;
             font-weight: bold;
-            margin-bottom: 30px;
-            text-align: center;
+            margin-top: 10px;
         }
 
-        /* 3D 顯示區域 */
+        /* 3D 顯示區域：設定為 flex-grow 填滿所有剩餘空間 */
         model-viewer {
+            flex-grow: 1; 
             width: 100%;
-            height: 55%;
             background-color: #ffffff;
-            --poster-color: transparent; /* 去除切換閃爍 */
+            --poster-color: transparent;
             outline: none;
+            /* 確保模型本身不帶額外邊界 */
+            margin: 0; 
         }
 
         /* 控制列 */
         .controls {
-            margin-top: 20px;
+            padding-bottom: 40px;
             display: flex;
             align-items: center;
             gap: 60px;
             z-index: 10;
+            background: rgba(255, 255, 255, 0.8); /* 稍微透明防止遮擋模型底部 */
+            width: 100%;
+            justify-content: center;
         }
 
         .nav-btn {
@@ -64,7 +79,7 @@
             cursor: pointer;
             font-size: 2rem;
             font-weight: bold;
-            color: #000000; /* 按鈕也改為全黑 */
+            color: #000000;
             transition: transform 0.2s ease;
         }
 
@@ -78,13 +93,21 @@
             color: #000000;
             letter-spacing: 2px;
         }
+
+        /* 針對小螢幕（手機）調整字體，避免換行產生白邊 */
+        @media (max-width: 768px) {
+            .site-title { font-size: 2rem; letter-spacing: 4px; }
+            .item-title { font-size: 1.2rem; }
+            .controls { gap: 30px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="site-title">迷你燈箱設計</div>
-
-    <div class="item-title" id="title-display">設計 1</div>
+    <div class="header-section">
+        <div class="site-title">迷你燈箱設計</div>
+        <div class="item-title" id="title-display">設計 1</div>
+    </div>
 
     <model-viewer 
         id="viewer"
@@ -121,18 +144,4 @@
             const item = gallery[currentIndex];
             viewer.src = item.file;
             titleDisplay.innerText = item.title;
-            indexDisplay.innerText = `${currentIndex + 1} / ${gallery.length}`;
-        }
-
-        function nextItem() {
-            currentIndex = (currentIndex + 1) % gallery.length;
-            updateGallery();
-        }
-
-        function prevItem() {
-            currentIndex = (currentIndex - 1 + gallery.length) % gallery.length;
-            updateGallery();
-        }
-    </script>
-</body>
-</html>
+            indexDisplay.innerText
