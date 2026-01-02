@@ -18,17 +18,23 @@
             position: relative;
         }
 
-        model-viewer {
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            --poster-color: transparent;
-            outline: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1; 
-        }
+            <model-viewer 
+        id="viewer"
+        src="設計1.glb" 
+        ar 
+        camera-controls 
+        auto-rotate 
+        /* 1. 設定初始視角為正面 (與Y軸平行通常是 0度 75度 100%) */
+        camera-orbit="0deg 75deg 100%"
+        /* 2. 控制旋轉方向：設定為負值即會由右向左轉 */
+        rotation-per-second="-30deg" 
+        loading="eager"
+        interaction-prompt="none"
+        shadow-intensity="1"
+        shadow-softness="1"
+        exposure="1">
+    </model-viewer>
+
 
         .header-container {
             position: absolute;
@@ -156,3 +162,4 @@
     </script>
 </body>
 </html>
+
