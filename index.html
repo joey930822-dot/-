@@ -8,28 +8,21 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
-        /* 1. 移除所有預設間距，確保無邊框 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: #ffffff;
             height: 100vh;
             width: 100vw;
             font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
-            overflow: hidden; /* 禁止捲動 */
+            overflow: hidden;
             position: relative;
         }
 
-        /* 2. 讓 3D 模型撐滿全螢幕並置於底層 */
         model-viewer {
             width: 100%;
             height: 100%;
             background-color: #ffffff;
-            --poster-color: transparent; /* 解決切換黑屏 */
+            --poster-color: transparent;
             outline: none;
             position: absolute;
             top: 0;
@@ -37,16 +30,15 @@
             z-index: 1; 
         }
 
-        /* 3. 標題區域：置頂、中央、透明穿透 */
         .header-container {
             position: absolute;
-            top: 5vh; /* 距離頂部 5% 高度 */
+            top: 5vh;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10;
-            pointer-events: none; /* 關鍵：讓滑鼠操作可以穿透文字去轉動模型 */
+            pointer-events: none;
         }
 
         .site-title {
@@ -55,7 +47,7 @@
             font-weight: 900;
             letter-spacing: 8px;
             text-align: center;
-            pointer-events: auto; /* 恢復文字可選取狀態 */
+            pointer-events: auto;
         }
 
         .item-title {
@@ -67,10 +59,9 @@
             pointer-events: auto;
         }
 
-        /* 4. 控制按鈕：置底、中央 */
         .controls {
             position: absolute;
-            bottom: 5vh; /* 距離底部 5% 高度 */
+            bottom: 5vh;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -89,9 +80,7 @@
             transition: transform 0.2s ease;
         }
 
-        .nav-btn:hover {
-            transform: scale(1.2);
-        }
+        .nav-btn:hover { transform: scale(1.2); }
 
         .item-indicator {
             font-size: 1rem;
@@ -100,15 +89,9 @@
             letter-spacing: 2px;
         }
 
-        /* 響應式：手機版縮小字體防止遮擋過多 */
         @media (max-width: 768px) {
-            .site-title {
-                font-size: 2rem;
-                letter-spacing: 4px;
-            }
-            .controls {
-                gap: 30px;
-            }
+            .site-title { font-size: 2rem; letter-spacing: 4px; }
+            .controls { gap: 30px; }
         }
     </style>
 </head>
@@ -125,6 +108,8 @@
         ar 
         camera-controls 
         auto-rotate 
+        camera-orbit="0deg 75deg 105%" 
+        rotation-speed="0.5"
         loading="eager"
         interaction-prompt="none"
         shadow-intensity="1"
@@ -155,6 +140,8 @@
             viewer.src = item.file;
             titleDisplay.innerText = item.title;
             indexDisplay.innerText = `${currentIndex + 1} / ${gallery.length}`;
+            // 切換模型後重置為正面
+            viewer.cameraOrbit = "0deg 75deg 105%";
         }
 
         function nextItem() {
