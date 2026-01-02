@@ -14,6 +14,11 @@
             box-sizing: border-box;
         }
 
+        /* 使用 rem 單位替代 px 以實現自動縮放 */
+        :root {
+            font-size: 16px; 
+        }
+
         body {
             background-color: #ffffff;
             height: 100vh;
@@ -35,10 +40,10 @@
             z-index: 1;
         }
 
-        /* 標題區域 */
+        /* 標題區域：使用 rem 單位 */
         .header-container {
             position: absolute;
-            top: 6vh;
+            top: 5vh;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -48,33 +53,31 @@
         }
 
         .site-title {
-            font-size: 4rem;
+            font-size: 3rem; /* 改用 rem 實現動態縮放 */
             color: #000000;
             font-weight: 900;
-            letter-spacing: 12px;
+            letter-spacing: 0.5rem;
             text-align: center;
             pointer-events: auto;
         }
 
         .item-title {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #000000;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 0.5rem;
         }
 
-        /* 終極修正：控制列 */
+        /* 控制列：位置上移並固定寬度 */
         .controls {
             position: absolute;
-            bottom: 8vh;
+            bottom: 15vh; /* 提高底距，避開手機工具欄 */
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
-            
-            /* 使用固定寬度容器，確保內容有足夠空間 */
-            width: 280px; 
+            width: 15rem; /* 使用 rem 適配不同分辨率 */
             display: flex;
-            justify-content: space-between; /* 左右撐開 */
+            justify-content: space-between;
             align-items: center;
         }
 
@@ -82,48 +85,21 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #000000;
-            width: 60px; /* 固定按鈕點擊區域 */
+            width: 3rem;
             text-align: center;
             flex-shrink: 0;
         }
 
         .item-indicator {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #000000;
             letter-spacing: 2px;
-            flex-grow: 1; /* 佔據剩餘空間 */
             text-align: center;
-            white-space: nowrap; /* 絕對不准換行 */
-        }
-
-        /* 手機版細節修正 */
-        @media (max-width: 768px) {
-            .site-title {
-                font-size: 2.2rem;
-                letter-spacing: 4px;
-            }
-
-            .header-container {
-                top: 8vh;
-            }
-
-            .controls {
-                width: 220px; /* 手機版縮小總寬度 */
-                bottom: 10vh;
-            }
-
-            .nav-btn {
-                font-size: 2.2rem;
-                width: 40px;
-            }
-
-            .item-indicator {
-                font-size: 1rem;
-            }
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -142,10 +118,8 @@
         auto-rotate 
         camera-orbit="90deg 75deg 100%"
         rotation-per-second="-30deg"
-        loading="eager"
         interaction-prompt="none"
         shadow-intensity="1"
-        shadow-softness="1"
         exposure="1">
     </model-viewer>
 
@@ -156,6 +130,18 @@
     </div>
 
     <script>
+        // 2. 透過 JavaScript 動態計算根元素字體大小以適配屏幕分辨率
+        function setRem() {
+            const designWidth = 750; // 基於主流設計稿寬度
+            const clientWidth = document.documentElement.clientWidth;
+            // 限制最大縮放比例防止電腦端字體過大
+            const baseSize = clientWidth > 768 ? 20 : (clientWidth / designWidth) * 32; 
+            document.documentElement.style.fontSize = baseSize + 'px';
+        }
+        
+        window.addEventListener('resize', setRem);
+        setRem();
+
         const gallery = [
             { title: "設計 1", file: "設計1.glb" },
             { title: "設計 2", file: "設計2.glb" },
