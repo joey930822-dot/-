@@ -8,7 +8,13 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* 基礎設定：消除所有邊距 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background-color: #ffffff;
             height: 100vh;
@@ -18,44 +24,42 @@
             position: relative;
         }
 
-            <model-viewer 
-        id="viewer"
-        src="設計1.glb" 
-        ar 
-        camera-controls 
-        auto-rotate 
-        /* 1. 設定初始視角為正面 (與Y軸平行通常是 0度 75度 100%) */
-        camera-orbit="0deg 75deg 100%"
-        /* 2. 控制旋轉方向：設定為負值即會由右向左轉 */
-        rotation-per-second="-30deg" 
-        loading="eager"
-        interaction-prompt="none"
-        shadow-intensity="1"
-        shadow-softness="1"
-        exposure="1">
-    </model-viewer>
+        /* 3D 模型區域：全螢幕背景 */
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            --poster-color: transparent; /* 去除切換閃爍 */
+            outline: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
 
-
+        /* 頂部文字容器 */
         .header-container {
             position: absolute;
-            top: 5vh;
+            top: 6vh;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10;
-            pointer-events: none;
+            pointer-events: none; /* 讓點擊穿透文字以操作模型 */
         }
 
+        /* 大標題：字體放大四倍、黑粗體、無外框 */
         .site-title {
             font-size: 4rem;
             color: #000000;
             font-weight: 900;
             letter-spacing: 8px;
             text-align: center;
-            pointer-events: auto;
+            pointer-events: auto; /* 恢復文字可選取 */
         }
 
+        /* 作品動態名稱 */
         .item-title {
             font-size: 1.5rem;
             color: #000000;
@@ -65,9 +69,10 @@
             pointer-events: auto;
         }
 
+        /* 下方控制按鈕 */
         .controls {
             position: absolute;
-            bottom: 5vh;
+            bottom: 6vh;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -86,7 +91,9 @@
             transition: transform 0.2s ease;
         }
 
-        .nav-btn:hover { transform: scale(1.2); }
+        .nav-btn:hover {
+            transform: scale(1.2);
+        }
 
         .item-indicator {
             font-size: 1rem;
@@ -95,9 +102,15 @@
             letter-spacing: 2px;
         }
 
+        /* 手機版適應 */
         @media (max-width: 768px) {
-            .site-title { font-size: 2rem; letter-spacing: 4px; }
-            .controls { gap: 30px; }
+            .site-title {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+            .controls {
+                gap: 30px;
+            }
         }
     </style>
 </head>
@@ -114,8 +127,10 @@
         ar 
         camera-controls 
         auto-rotate 
-        camera-orbit="0deg 75deg 105%" 
-        rotation-speed="0.5"
+        /* 初始視角：正面 */
+        camera-orbit="0deg 75deg 100%"
+        /* 旋轉方向：由右至左 (負值) */
+        rotation-per-second="-30deg" 
         loading="eager"
         interaction-prompt="none"
         shadow-intensity="1"
@@ -143,11 +158,15 @@
 
         function updateGallery() {
             const item = gallery[currentIndex];
+            // 更新模型路徑
             viewer.src = item.file;
+            // 更新標題內容
             titleDisplay.innerText = item.title;
+            // 更新頁碼
             indexDisplay.innerText = `${currentIndex + 1} / ${gallery.length}`;
-            // 切換模型後重置為正面
-            viewer.cameraOrbit = "0deg 75deg 105%";
+            
+            // 每次切換確保回到正面
+            viewer.cameraOrbit = "0deg 75deg 100%";
         }
 
         function nextItem() {
@@ -162,4 +181,3 @@
     </script>
 </body>
 </html>
-
