@@ -8,7 +8,7 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     
     <style>
-        /* 基礎設定：消除所有邊距 */
+        /* 移除預設間距，確保全螢幕無白邊 */
         * {
             margin: 0;
             padding: 0;
@@ -24,12 +24,12 @@
             position: relative;
         }
 
-        /* 3D 模型區域：全螢幕背景 */
+        /* 3D 模型視窗：全螢幕置底 */
         model-viewer {
             width: 100%;
             height: 100%;
             background-color: #ffffff;
-            --poster-color: transparent; /* 去除切換閃爍 */
+            --poster-color: transparent; /* 去除切換時的黑條閃爍 */
             outline: none;
             position: absolute;
             top: 0;
@@ -37,29 +37,27 @@
             z-index: 1;
         }
 
-        /* 頂部文字容器 */
+        /* 頂部標題區域：中央大字體、黑粗體、無外框 */
         .header-container {
             position: absolute;
-            top: 6vh;
+            top: 8vh;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10;
-            pointer-events: none; /* 讓點擊穿透文字以操作模型 */
+            pointer-events: none; /* 讓滑鼠操作可以穿透文字操作模型 */
         }
 
-        /* 大標題：字體放大四倍、黑粗體、無外框 */
         .site-title {
-            font-size: 4rem;
-            color: #000000;
-            font-weight: 900;
-            letter-spacing: 8px;
+            font-size: 4rem; /* 放大四倍 */
+            color: #000000; /* 全黑 */
+            font-weight: 900; /* 極粗體 */
+            letter-spacing: 12px;
             text-align: center;
-            pointer-events: auto; /* 恢復文字可選取 */
+            pointer-events: auto;
         }
 
-        /* 作品動態名稱 */
         .item-title {
             font-size: 1.5rem;
             color: #000000;
@@ -69,15 +67,15 @@
             pointer-events: auto;
         }
 
-        /* 下方控制按鈕 */
+        /* 控制按鈕：置底中央 */
         .controls {
             position: absolute;
-            bottom: 6vh;
+            bottom: 8vh;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             align-items: center;
-            gap: 60px;
+            gap: 80px;
             z-index: 10;
         }
 
@@ -85,31 +83,31 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: bold;
             color: #000000;
             transition: transform 0.2s ease;
         }
 
         .nav-btn:hover {
-            transform: scale(1.2);
+            transform: scale(1.3);
         }
 
         .item-indicator {
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #000000;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
         }
 
-        /* 手機版適應 */
+        /* 響應式設計：手機版自動縮小字體 */
         @media (max-width: 768px) {
             .site-title {
                 font-size: 2rem;
                 letter-spacing: 4px;
             }
             .controls {
-                gap: 30px;
+                gap: 40px;
             }
         }
     </style>
@@ -117,7 +115,7 @@
 <body>
 
     <div class="header-container">
-        <div class="site-title">迷你燈箱設計</div>
+        <h1 class="site-title">迷你燈箱設計</h1>
         <div class="item-title" id="title-display">設計 1</div>
     </div>
 
@@ -127,9 +125,9 @@
         ar 
         camera-controls 
         auto-rotate 
-        /* 初始視角：正面 */
-        camera-orbit="0deg 75deg 100%"
-        /* 旋轉方向：由右至左 (負值) */
+        /* 初始視角與 X 軸平行 (90度) */
+        camera-orbit="90deg 75deg 100%"
+        /* 由右向左旋轉 (負值速度) */
         rotation-per-second="-30deg" 
         loading="eager"
         interaction-prompt="none"
@@ -145,6 +143,7 @@
     </div>
 
     <script>
+        // 定義作品清單
         const gallery = [
             { title: "設計 1", file: "設計1.glb" },
             { title: "設計 2", file: "設計2.glb" },
@@ -158,15 +157,16 @@
 
         function updateGallery() {
             const item = gallery[currentIndex];
-            // 更新模型路徑
+            
+            // 變更模型檔案
             viewer.src = item.file;
-            // 更新標題內容
+            
+            // 更新文字顯示
             titleDisplay.innerText = item.title;
-            // 更新頁碼
             indexDisplay.innerText = `${currentIndex + 1} / ${gallery.length}`;
             
-            // 每次切換確保回到正面
-            viewer.cameraOrbit = "0deg 75deg 100%";
+            // 確保切換後攝影機視角重設為 X 軸平行 (90度)
+            viewer.cameraOrbit = "90deg 75deg 100%";
         }
 
         function nextItem() {
